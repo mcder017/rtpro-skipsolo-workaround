@@ -142,7 +142,7 @@ def parse_microgate_standard_and_extended(data, request_annul_double_starts):
                             ask_annul_data += time_or_speed # overwrite event detected
                             ask_annul_data += date_or_net_days
                             ask_annul_data += '\x0d'
-                            request_annul(ask_annul_data)
+                            send_request(ask_annul_data)
 
                     else:
                         print("ATHLETE START")
@@ -257,14 +257,14 @@ def parse_reduced(data):
         print("Message not reduced protocol")
 
 
-def request_annul(ask_annul_data):
-    if len(ask_annul_data) == 37 and ask_annul_data[0] == '\x17':
-        try:
-            ser.write(ask_annul_data.encode('utf-8'))
-            print("Sent request to annul event")
+def send_request(ask_data):
+    #if len(ask_data) == 37 and ask_data[0] == '\x17':
+    try:
+        ser.write(ask_data.encode('utf-8'))
+        print("Sent request to timer")
 
-        except Exception as local_exception:
-            print(f"Error at write: {local_exception}")
+    except Exception as local_exception:
+        print(f"Error at write: {local_exception}")
 
 
 def reformat_ddmmyyyy_to_mm_dd_yyyy(my_date):
