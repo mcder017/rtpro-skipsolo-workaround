@@ -136,7 +136,7 @@ def parse_microgate_standard_and_extended(data, request_annul_double_starts):
                         print("2+ STARTS SINCE FINISH")
                         if request_annul_double_starts:
                             ask_annul_data = "\x17R a"  # request annul
-                            ask_annul_data += competitor + logical_channel
+                            ask_annul_data += competitor + logical_channel # known RTPro bug as of Dec2024: logical_channel response, at least stop, needs to be 3 bytes even for extended protocol (which sends 5 bytes)
                             ask_annul_data += "900" # PC edited event
                             ask_annul_data += run
                             ask_annul_data += time_or_speed # overwrite event detected
