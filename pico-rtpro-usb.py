@@ -1,3 +1,5 @@
+# save on Pico (via Thonny app) as main.py for autostart
+#
 #import serial.tools.list_ports
 #import serial
 import select
@@ -141,7 +143,14 @@ def parse_microgate_standard_and_extended(data, request_annul_double_starts):
                         #print("2+ STARTS SINCE FINISH")
                         if request_annul_double_starts:
                             ask_annul_data = "\x17R a"  # request annul
-                            ask_annul_data += competitor + logical_channel
+                            ask_annul_data += competitor
+                            # Known bug in RT Pro at least as of 1.8.0,
+                            # While Microgate Std Protocol (3 byte logical channel) sends 255=Stop and accepts response with 255=Stop
+                            # the Microgate Ext Protocol (5 byte logical channel) sends 65535=Stop, but REQUIRES response of three byte 255=Stop to annul
+                            if message_type_extended:
+                                ask_annul_data += logical_channel[2:5] if (logical_channel is not "65535") else "255"
+                            else:
+                                ask_annul_data += logical_channel
                             ask_annul_data += "900" # PC edited event
                             ask_annul_data += run
                             ask_annul_data += time_or_speed # overwrite event detected
